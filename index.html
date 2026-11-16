@@ -1,0 +1,2176 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StudyFlow - Plataforma inteligente para organizar seus estudos.">
+    <meta name="theme-color" content="#0f111a">
+    <title>StudyFlow — Plataforma de Estudos</title>
+    <!-- Ícones -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js para Gráficos Avançados de Evolução -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Estilos -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside class="sidebar">
+        <!-- LOGO -->
+        <div class="logo">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>
+                Study<span>Flow</span>
+            </span>
+        </div>
+        <!-- PERFIL -->
+        <div class="sidebar-profile">
+            <div class="profile-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="profile-info">
+                <strong id="nome-usuario">Estudante</strong>
+                <span>Foco nos estudos</span>
+            </div>
+        </div>
+        <!-- MENU PRINCIPAL -->
+        <nav class="sidebar-nav">
+            <p class="menu-title">MENU</p>
+            <button class="nav-item active" data-page="dashboard">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-page="aulas">
+                <i class="fa-solid fa-book-open"></i>
+                <span>Minhas Aulas</span>
+            </button>
+            <button class="nav-item" data-page="exercicios">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>Exercícios</span>
+            </button>
+            <button class="nav-item" data-page="revisoes">
+                <i class="fa-solid fa-brain"></i>
+                <span>Revisão Inteligente</span>
+                <span id="badge-nav-revisoes" class="nav-badge" style="display: none;">0</span>
+            </button>
+            <button class="nav-item" data-page="planejamento">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Planejamento</span>
+            </button>
+            <button class="nav-item" data-page="foco">
+                <i class="fa-solid fa-stopwatch"></i>
+                <span>Modo Foco</span>
+            </button>
+            <button class="nav-item" data-page="desempenho">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Desempenho</span>
+            </button>
+            <button class="nav-item" data-page="conquistas">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Conquistas</span>
+                <span id="badge-nav-conquistas" class="nav-badge" style="display: none;">0</span>
+            </button>
+            <p class="menu-title menu-title-spaced">ORGANIZAÇÃO</p>
+            <button class="nav-item" data-page="materias">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Minhas Matérias</span>
+            </button>
+            <button class="nav-item" data-page="metas">
+                <i class="fa-solid fa-bullseye"></i>
+                <span>Minhas Metas</span>
+            </button>
+        </nav>
+        <!-- META SEMANAL -->
+        <div class="sidebar-section metas-section">
+            <h3>
+                <i class="fa-solid fa-bullseye"></i>
+                Meta Semanal
+            </h3>
+            <div class="meta-box">
+                <div class="meta-top">
+                    <span>Progresso</span>
+                    <strong>
+                        <span id="meta-atual">0</span> /
+                        <span id="meta-objetivo">5</span>
+                    </strong>
+                </div>
+                <div class="meta-progresso-bg">
+                    <div
+                        id="meta-barra-progresso"
+                        class="meta-barra-fill"
+                        style="width: 0%">
+                    </div>
+                </div>
+                <small>
+                    Continue estudando para atingir sua meta!
+                </small>
+            </div>
+        </div>
+        <!-- RODAPÉ SIDEBAR -->
+        <div class="sidebar-bottom">
+            <button class="nav-item" data-page="configuracoes">
+                <i class="fa-solid fa-gear"></i>
+                <span>Configurações</span>
+            </button>
+        </div>
+    </aside>
+    <!-- =====================================================
+         CONTEÚDO PRINCIPAL
+    ====================================================== -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <header class="main-header">
+            <div class="header-left">
+                <button id="mobile-menu-btn" class="mobile-menu-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="page-heading">
+                    <span id="page-breadcrumb">Dashboard</span>
+                    <h1 id="page-title">Olá, <span id="nome-dashboard">Estudante</span>! 👋</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- PESQUISA -->
+                <div class="search-bar-wrapper">
+                    <div class="search-bar">
+                        <button type="button" id="search-btn" class="search-btn" title="Pesquisar">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Pesquisar tarefas, aulas, matérias..."
+                            autocomplete="off"
+                        >
+                    </div>
+                    <!-- Dropdown de Resultados da Pesquisa -->
+                    <div id="search-results-panel" class="search-results-panel" style="display: none;">
+                        <div class="search-results-header">
+                            <span><i class="fa-solid fa-magnifying-glass"></i> Resultados da pesquisa</span>
+                            <button type="button" id="close-search-results" class="close-search-btn" title="Fechar">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <div id="search-results-content" class="search-results-content">
+                            <!-- Resultados via JS -->
+                        </div>
+                    </div>
+                </div>
+                <!-- NOTIFICAÇÕES -->
+                <button
+                    class="header-icon-btn"
+                    id="notification-btn"
+                    title="Notificações"
+                >
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <!-- DATA -->
+                <div class="calendar-widget-mini">
+                    <i class="fa-regular fa-calendar-days"></i>
+                    <span id="data-atual-txt">
+                        --/--/----
+                    </span>
+                </div>
+            </div>
+        </header>
+        <!-- =================================================
+             PÁGINA DASHBOARD
+        ================================================== -->
+        <section id="page-dashboard" class="page active">
+            <!-- BOAS-VINDAS -->
+            <div class="welcome-banner">
+                <div class="welcome-content">
+                    <span class="welcome-label">
+                        <i class="fa-solid fa-sparkles"></i>
+                        SEU ESPAÇO DE ESTUDOS
+                    </span>
+                    <h2>
+                        Organize seus estudos.<br>
+                        Alcance seus objetivos.
+                    </h2>
+                    <p>
+                        Acompanhe suas tarefas, aulas, metas e evolução
+                        em um único lugar.
+                    </p>
+                    <button
+                        class="btn-primary"
+                        data-action="new-task"
+                    >
+                        <i class="fa-solid fa-plus"></i>
+                        Nova tarefa
+                    </button>
+                </div>
+                <div class="welcome-illustration">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+            </div>
+            <!-- ESTATÍSTICAS -->
+            <section class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon icon-tasks">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Total de tarefas</span>
+                        <h3 id="total-tarefas">
+                            0
+                        </h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-done">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Tarefas concluídas</span>
+                        <h3 id="concluidas-tarefas">
+                            0
+                        </h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-hours">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Horas estudadas</span>
+                        <h3 id="horas-estudadas">
+                            0h
+                        </h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-streak">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Sequência atual</span>
+                        <h3>
+                            <span id="sequencia-estudos">0</span> dias
+                        </h3>
+                    </div>
+                </div>
+            </section>
+            <!-- PROGRESSO GERAL -->
+            <section class="dashboard-progress card">
+                <div class="section-header">
+                    <div>
+                        <span class="section-eyebrow">
+                            SEU PROGRESSO
+                        </span>
+                        <h3>Progresso geral</h3>
+                    </div>
+                    <strong id="porcentagem-progresso">
+                        0%
+                    </strong>
+                </div>
+                <div class="progress-bar-bg large">
+                    <div
+                        id="barra-progresso-geral"
+                        class="progress-bar-fill"
+                        style="width: 0%"
+                    ></div>
+                </div>
+                <p>
+                    Continue completando suas atividades para aumentar
+                    seu progresso.
+                </p>
+            </section>
+            <!-- GRID PRINCIPAL -->
+            <div class="dashboard-grid">
+                <!-- PRÓXIMAS TAREFAS -->
+                <section class="card upcoming-card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">
+                                ORGANIZAÇÃO
+                            </span>
+                            <h3>Próximas tarefas</h3>
+                        </div>
+                        <button
+                            class="text-button"
+                            data-action="view-tasks"
+                        >
+                            Ver todas
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div
+                        id="dashboard-tarefas"
+                        class="dashboard-task-list"
+                    >
+                        <!-- JS -->
+                    </div>
+                </section>
+                <!-- RESUMO DE ESTUDO -->
+                <section class="card study-summary-card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">
+                                DESEMPENHO
+                            </span>
+                            <h3>Resumo dos estudos</h3>
+                        </div>
+                    </div>
+                    <div class="study-summary">
+                        <div class="summary-item">
+                            <div class="summary-icon">
+                                <i class="fa-solid fa-book"></i>
+                            </div>
+                            <div>
+                                <strong id="resumo-aulas">
+                                    0
+                                </strong>
+                                <span>Aulas concluídas</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-icon">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <div>
+                                <strong id="resumo-questoes">
+                                    0
+                                </strong>
+                                <span>Questões resolvidas</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-icon">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <div>
+                                <strong id="resumo-acerto">
+                                    0%
+                                </strong>
+                                <span>Taxa de acerto</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- AÇÕES RÁPIDAS -->
+            <section class="quick-actions-section">
+                <div class="section-header">
+                    <div>
+                        <span class="section-eyebrow">
+                            ACESSO RÁPIDO
+                        </span>
+                        <h3>O que você quer fazer?</h3>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <button
+                        class="quick-action"
+                        data-action="new-task"
+                    >
+                        <div class="quick-action-icon purple">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div>
+                            <strong>Nova tarefa</strong>
+                            <span>Adicione uma atividade</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button
+                        class="quick-action"
+                        data-page="aulas"
+                    >
+                        <div class="quick-action-icon cyan">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div>
+                            <strong>Continuar aula</strong>
+                            <span>Continue seus estudos</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button
+                        class="quick-action"
+                        data-page="exercicios"
+                    >
+                        <div class="quick-action-icon green">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </div>
+                        <div>
+                            <strong>Resolver questões</strong>
+                            <span>Pratique seus conhecimentos</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button
+                        class="quick-action"
+                        data-page="foco"
+                    >
+                        <div class="quick-action-icon orange">
+                            <i class="fa-solid fa-stopwatch"></i>
+                        </div>
+                        <div>
+                            <strong>Iniciar foco</strong>
+                            <span>Comece uma sessão</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button
+                        class="quick-action"
+                        data-page="revisoes"
+                    >
+                        <div class="quick-action-icon yellow">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <div>
+                            <strong>Revisão inteligente</strong>
+                            <span>Fixe conteúdos no prazo</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button
+                        class="quick-action"
+                        data-page="conquistas"
+                    >
+                        <div class="quick-action-icon gold">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div>
+                            <strong>Conquistas</strong>
+                            <span>Veja suas recompensas</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+        </section>
+        <!-- =================================================
+             PÁGINA DE AULAS
+        ================================================== -->
+        <section id="page-aulas" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">
+                        APRENDA
+                    </span>
+                    <h2>Minhas Aulas</h2>
+                    <p>
+                        Organize seu aprendizado por matérias e módulos.
+                    </p>
+                </div>
+                <button
+                    class="btn-primary"
+                    id="btn-nova-aula"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    Nova aula
+                </button>
+            </div>
+            <div class="course-stats">
+                <div class="mini-stat">
+                    <i class="fa-solid fa-book-open"></i>
+                    <div>
+                        <strong id="total-aulas">0</strong>
+                        <span>Aulas</span>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div>
+                        <strong id="aulas-concluidas">0</strong>
+                        <span>Concluídas</span>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <div>
+                        <strong id="progresso-aulas">0%</strong>
+                        <span>Progresso</span>
+                    </div>
+                </div>
+            </div>
+            <div class="aulas-filter-bar">
+                <div id="aulas-categorias" class="exercise-categories">
+                    <!-- Gerado dinamicamente via JS (Todas + Matérias) -->
+                </div>
+            </div>
+            <div
+                id="lista-aulas"
+                class="courses-grid"
+            >
+                <!-- JS -->
+            </div>
+        </section>
+        <!-- =================================================
+             PÁGINA DE EXERCÍCIOS
+        ================================================== -->
+        <section id="page-exercicios" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">
+                        PRATIQUE
+                    </span>
+                    <h2>Exercícios</h2>
+                    <p>
+                        Teste seus conhecimentos, resolva questões e cadastre seus próprios simulados.
+                    </p>
+                </div>
+                <div class="page-intro-actions">
+                    <button
+                        class="btn-primary"
+                        id="btn-iniciar-exercicio"
+                    >
+                        <i class="fa-solid fa-play"></i>
+                        Começar exercício
+                    </button>
+                    <button
+                        class="btn-secondary"
+                        id="btn-nova-questao"
+                    >
+                        <i class="fa-solid fa-plus"></i>
+                        Nova questão
+                    </button>
+                    <button
+                        class="btn-secondary"
+                        id="btn-gerenciar-questoes"
+                    >
+                        <i class="fa-solid fa-layer-group"></i>
+                        Minhas questões
+                    </button>
+                </div>
+            </div>
+
+            <!-- CATEGORIAS DINÂMICAS DE EXERCÍCIOS -->
+            <div class="exercise-categories-wrapper">
+                <div id="categorias-exercicios" class="exercise-categories">
+                    <button class="exercise-category active" data-category="todos">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span>Todas</span>
+                    </button>
+                    <button class="exercise-category" data-category="matematica">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Matemática</span>
+                    </button>
+                    <button class="exercise-category" data-category="linguagens">
+                        <i class="fa-solid fa-language"></i>
+                        <span>Linguagens</span>
+                    </button>
+                    <button class="exercise-category" data-category="natureza">
+                        <i class="fa-solid fa-flask"></i>
+                        <span>Natureza</span>
+                    </button>
+                    <button class="exercise-category" data-category="humanas">
+                        <i class="fa-solid fa-earth-americas"></i>
+                        <span>Humanas</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ÁREA DE RESOLUÇÃO INTERATIVA DE EXERCÍCIO -->
+            <div id="area-resolucao-exercicio" class="card exercise-solver-card" style="display: none;">
+                <div class="solver-header">
+                    <div class="solver-tags">
+                        <span class="solver-badge-materia" id="solver-materia">Matéria</span>
+                        <span class="solver-badge-topico" id="solver-topico">Tópico</span>
+                    </div>
+                    <button type="button" class="solver-close-btn" id="btn-fechar-solver" title="Fechar">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="solver-body">
+                    <p id="solver-pergunta" class="solver-question-text"></p>
+                    <div id="solver-alternativas" class="solver-alternatives-list">
+                        <!-- Alternativas injetadas via JS -->
+                    </div>
+                    <!-- Feedback da resposta -->
+                    <div id="solver-feedback" class="solver-feedback" style="display: none;">
+                        <div id="solver-feedback-banner" class="solver-feedback-banner"></div>
+                        <div class="solver-explanation">
+                            <strong><i class="fa-solid fa-lightbulb"></i> Explicação:</strong>
+                            <p id="solver-explicacao-texto"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="solver-footer">
+                    <button type="button" class="btn-primary" id="btn-solver-confirmar" disabled>
+                        <i class="fa-solid fa-check"></i>
+                        Confirmar resposta
+                    </button>
+                    <button type="button" class="btn-primary" id="btn-solver-proximo" style="display: none;">
+                        Próxima questão
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ÁREA DE GERENCIAMENTO DE QUESTÕES PERSONALIZADAS -->
+            <div id="area-gerenciamento-questoes" class="card custom-questions-card" style="display: none;">
+                <div class="section-header">
+                    <div>
+                        <span class="section-eyebrow">PERSONALIZAÇÃO</span>
+                        <h3>Minhas Questões Cadastradas</h3>
+                    </div>
+                    <button type="button" class="btn-secondary" id="btn-fechar-gerenciamento">
+                        <i class="fa-solid fa-xmark"></i> Fechar
+                    </button>
+                </div>
+                <div id="lista-questoes-custom">
+                    <!-- Lista de questões personalizadas via JS -->
+                </div>
+            </div>
+            <div class="exercise-dashboard">
+                <div class="card exercise-progress-card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">
+                                SEU DESEMPENHO
+                            </span>
+                            <h3>Desempenho nas questões</h3>
+                        </div>
+                    </div>
+                    <div class="exercise-stats">
+                        <div>
+                            <strong id="questoes-resolvidas">
+                                0
+                            </strong>
+                            <span>Resolvidas</span>
+                        </div>
+                        <div>
+                            <strong id="questoes-acertos">
+                                0
+                            </strong>
+                            <span>Acertos</span>
+                        </div>
+                        <div>
+                            <strong id="questoes-erros">
+                                0
+                            </strong>
+                            <span>Erros</span>
+                        </div>
+                        <div>
+                            <strong id="questoes-porcentagem">
+                                0%
+                            </strong>
+                            <span>Acerto</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">
+                                HISTÓRICO
+                            </span>
+                            <h3>Últimos exercícios</h3>
+                        </div>
+                    </div>
+                    <div id="historico-exercicios">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <h4>Nenhum exercício ainda</h4>
+                            <p>Comece a resolver questões para criar seu histórico.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- =================================================
+             PÁGINA REVISÃO INTELIGENTE
+        ================================================== -->
+        <section id="page-revisoes" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">
+                        REPETIÇÃO ESPAÇADA
+                    </span>
+                    <h2>Revisão Inteligente</h2>
+                    <p>
+                        Revise conteúdos no momento ideal com base no método de repetição espaçada para fixação a longo prazo.
+                    </p>
+                </div>
+                <button
+                    class="btn-primary"
+                    id="btn-nova-revisao"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    Nova revisão
+                </button>
+            </div>
+
+            <!-- CARDS DE RESUMO DE REVISÕES -->
+            <div class="review-stats-grid">
+                <div class="review-stat-card card stat-hoje" data-filtro="hoje">
+                    <div class="review-stat-icon yellow">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="review-stat-info">
+                        <strong id="total-revisoes-hoje">0</strong>
+                        <span>Para hoje</span>
+                    </div>
+                </div>
+                <div class="review-stat-card card stat-atrasadas" data-filtro="atrasadas">
+                    <div class="review-stat-icon red">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div class="review-stat-info">
+                        <strong id="total-revisoes-atrasadas">0</strong>
+                        <span>Atrasadas</span>
+                    </div>
+                </div>
+                <div class="review-stat-card card stat-proximas" data-filtro="proximas">
+                    <div class="review-stat-icon blue">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div class="review-stat-info">
+                        <strong id="total-revisoes-proximas">0</strong>
+                        <span>Próximas</span>
+                    </div>
+                </div>
+                <div class="review-stat-card card stat-concluidas" data-filtro="concluidas">
+                    <div class="review-stat-icon green">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="review-stat-info">
+                        <strong id="total-revisoes-concluidas">0</strong>
+                        <span>Concluídas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABAS DE NAVEGAÇÃO / FILTROS -->
+            <div class="revisoes-filter-bar">
+                <div class="exercise-categories" id="revisoes-filtros">
+                    <button class="exercise-category active" data-filtro="hoje">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        <span>Para Hoje</span>
+                        <span class="badge-filtro" id="badge-count-hoje">0</span>
+                    </button>
+                    <button class="exercise-category" data-filtro="atrasadas">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Atrasadas</span>
+                        <span class="badge-filtro badge-red" id="badge-count-atrasadas">0</span>
+                    </button>
+                    <button class="exercise-category" data-filtro="proximas">
+                        <i class="fa-solid fa-calendar-week"></i>
+                        <span>Próximas</span>
+                        <span class="badge-filtro" id="badge-count-proximas">0</span>
+                    </button>
+                    <button class="exercise-category" data-filtro="concluidas">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Concluídas</span>
+                        <span class="badge-filtro" id="badge-count-concluidas">0</span>
+                    </button>
+                    <button class="exercise-category" data-filtro="todas">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span>Todas</span>
+                        <span class="badge-filtro" id="badge-count-todas">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- GRID / LISTA DE CARDS DE REVISÃO -->
+            <div id="lista-revisoes" class="revisoes-grid">
+                <!-- Injetado dinamicamente via JS -->
+            </div>
+        </section>
+        <!-- =================================================
+             PÁGINA PLANEJAMENTO
+        ================================================== -->
+        <section id="page-planejamento" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">
+                        ORGANIZE
+                    </span>
+                    <h2>Planejamento</h2>
+                    <p>
+                        Visualize seus estudos e organize sua rotina.
+                    </p>
+                </div>
+                <button
+                    class="btn-primary"
+                    data-action="new-task"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    Nova tarefa
+                </button>
+            </div>
+            <div class="planning-layout">
+                <div class="card planning-calendar-card">
+                    <div class="calendar-full-header">
+                        <button id="calendar-prev">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <h3 id="calendar-month-title">
+                            Mês
+                        </h3>
+                        <button id="calendar-next">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="calendar-weekdays">
+                        <span>Dom</span>
+                        <span>Seg</span>
+                        <span>Ter</span>
+                        <span>Qua</span>
+                        <span>Qui</span>
+                        <span>Sex</span>
+                        <span>Sáb</span>
+                    </div>
+                    <div
+                        id="full-calendar-grid"
+                        class="full-calendar-grid"
+                    >
+                        <!-- JS -->
+                    </div>
+                </div>
+                <div class="card day-tasks-card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">
+                                AGENDA
+                            </span>
+                            <h3>Atividades do dia</h3>
+                        </div>
+                    </div>
+                    <div id="day-tasks-list">
+                        <!-- JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- =================================================
+             PÁGINA MODO FOCO
+        ================================================== -->
+        <section id="page-foco" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">
+                        CONCENTRAÇÃO
+                    </span>
+                    <h2>Modo Foco</h2>
+                    <p>
+                        Estude sem distrações usando o temporizador.
+                    </p>
+                </div>
+            </div>
+            <div class="focus-container">
+                <div class="focus-timer-card card">
+                    <span class="focus-mode-label">
+                        SESSÃO DE ESTUDO
+                    </span>
+                    <div
+                        id="focus-timer"
+                        class="focus-timer"
+                    >
+                        25:00
+                    </div>
+                    <p id="focus-status">
+                        Pronto para começar?
+                    </p>
+                    <div class="focus-controls">
+                        <button
+                            id="focus-start"
+                            class="btn-primary"
+                        >
+                            <i class="fa-solid fa-play"></i>
+                            Começar
+                        </button>
+                        <button
+                            id="focus-reset"
+                            class="btn-secondary"
+                        >
+                            <i class="fa-solid fa-rotate-left"></i>
+                            Reiniciar
+                        </button>
+                    </div>
+                </div>
+                <div class="focus-settings card">
+                    <h3>Configurações da sessão</h3>
+                    <div class="focus-presets">
+                        <button
+                            class="focus-preset active"
+                            data-minutes="25"
+                        >
+                            <strong>25</strong>
+                            <span>minutos</span>
+                        </button>
+                        <button
+                            class="focus-preset"
+                            data-minutes="50"
+                        >
+                            <strong>50</strong>
+                            <span>minutos</span>
+                        </button>
+                        <button
+                            class="focus-preset"
+                            data-minutes="90"
+                        >
+                            <strong>90</strong>
+                            <span>minutos</span>
+                        </button>
+                    </div>
+                    <div class="focus-custom-box">
+                        <label for="focus-custom-min">
+                            <i class="fa-solid fa-sliders"></i> Duração personalizada (minutos)
+                        </label>
+                        <div class="focus-custom-input-group">
+                            <input
+                                type="number"
+                                id="focus-custom-min"
+                                min="1"
+                                max="300"
+                                placeholder="Ex: 40"
+                            >
+                            <button
+                                type="button"
+                                id="btn-aplicar-foco-custom"
+                                class="btn-secondary"
+                            >
+                                Definir tempo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="focus-tip">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <div>
+                            <strong>Dica de estudo</strong>
+                            <p>
+                                Durante o modo foco, evite trocar de tarefa.
+                                Concentre-se em uma atividade por vez.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- =================================================
+             PÁGINA DESEMPENHO — GRÁFICOS COMPLETOS DE EVOLUÇÃO
+        ================================================== -->
+        <section id="page-desempenho" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">
+                        PAINEL ANALÍTICO
+                    </span>
+                    <h2>Meu Desempenho</h2>
+                    <p>
+                        Acompanhe seus gráficos de evolução, constância semanal, matérias estudadas e comparativo entre períodos.
+                    </p>
+                </div>
+            </div>
+
+            <!-- CARDS DE ESTATÍSTICA GERAL -->
+            <div class="performance-stats">
+                <div class="performance-card card">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Horas estudadas</span>
+                    <strong id="performance-horas">0h</strong>
+                </div>
+                <div class="performance-card card">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Tarefas concluídas</span>
+                    <strong id="performance-tarefas">0</strong>
+                </div>
+                <div class="performance-card card">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Aulas concluídas</span>
+                    <strong id="performance-aulas">0</strong>
+                </div>
+                <div class="performance-card card">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span>Taxa de acerto</span>
+                    <strong id="performance-taxa">0%</strong>
+                </div>
+            </div>
+
+            <!-- GRÁFICO 1: HORAS ESTUDADAS POR SEMANA (DISTRIBUIÇÃO POR DIA & COMPARAÇÃO) -->
+            <div class="card chart-analytics-card">
+                <div class="section-header">
+                    <div>
+                        <span class="section-eyebrow">GRÁFICO 1 — HORAS ESTUDADAS</span>
+                        <h3>Horas Estudadas por Semana e Distribuição Diária</h3>
+                        <p class="chart-subtitle">Distribuição por dia da semana e comparação entre a semana atual e a anterior.</p>
+                    </div>
+                    <div class="chart-header-badge" id="badge-total-horas-semana">
+                        <i class="fa-solid fa-stopwatch"></i> Total nesta semana: <strong id="valor-total-horas-semana">0h</strong>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chart-horas-semana"></canvas>
+                </div>
+            </div>
+
+            <!-- GRÁFICO 2: EVOLUÇÃO POR MATÉRIA (DISTRIBUIÇÃO & PROGRESSO INDIVIDUAL) -->
+            <div class="analytics-grid-two-cols">
+                <div class="card chart-analytics-card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">GRÁFICO 2 — MATÉRIAS</span>
+                            <h3>Tempo Estudado por Matéria</h3>
+                            <p class="chart-subtitle">Proporção e tempo dedicado a cada disciplina cadastrada.</p>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-wrapper donut-wrapper">
+                        <canvas id="chart-materias-donut"></canvas>
+                    </div>
+                </div>
+
+                <div class="card chart-analytics-card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">PROGRESSO INDIVIDUAL</span>
+                            <h3>Evolução Detalhada por Matéria</h3>
+                            <p class="chart-subtitle">Taxa de conclusão de tarefas, aulas e acertos em exercícios.</p>
+                        </div>
+                    </div>
+                    <div id="materias-performance" class="materias-perf-list">
+                        <!-- Gerado via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRÁFICO 3 & GRÁFICO 4: TAREFAS CONCLUÍDAS & FREQUÊNCIA DE ESTUDOS -->
+            <div class="analytics-grid-two-cols">
+                <!-- GRÁFICO 3: TAREFAS CONCLUÍDAS (PENDENTES VS CONCLUÍDAS E EVOLUÇÃO TEMPORAL) -->
+                <div class="card chart-analytics-card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">GRÁFICO 3 — TAREFAS</span>
+                            <h3>Tarefas Concluídas vs Pendentes</h3>
+                            <p class="chart-subtitle">Volume de entregas realizadas e evolução temporal.</p>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="chart-tarefas-evolucao"></canvas>
+                    </div>
+                </div>
+
+                <!-- GRÁFICO 4: FREQUÊNCIA DE ESTUDOS (DIAS CONSECUTIVOS & ATIVIDADE) -->
+                <div class="card chart-analytics-card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">GRÁFICO 4 — FREQUÊNCIA</span>
+                            <h3>Frequência e Constância de Estudos</h3>
+                            <p class="chart-subtitle">Dias em que você estudou e histórico de consistência.</p>
+                        </div>
+                    </div>
+                    <div class="frequency-kpi-row">
+                        <div class="frequency-kpi-item">
+                            <span class="freq-label">Sequência Atual</span>
+                            <strong class="freq-val" id="freq-sequencia-atual">0 dias</strong>
+                        </div>
+                        <div class="frequency-kpi-item">
+                            <span class="freq-label">Recorde Histórico</span>
+                            <strong class="freq-val" id="freq-recorde-sequencia">0 dias</strong>
+                        </div>
+                        <div class="frequency-kpi-item">
+                            <span class="freq-label">Frequência Semanal</span>
+                            <strong class="freq-val" id="freq-frequencia-semanal">0%</strong>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="chart-frequencia-estudos"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRÁFICO 5: COMPARAÇÃO SEMANAL COM INDICADORES DE AUMENTO / DIMINUIÇÃO -->
+            <div class="card chart-analytics-card">
+                <div class="section-header">
+                    <div>
+                        <span class="section-eyebrow">GRÁFICO 5 — COMPARAÇÃO SEMANAL</span>
+                        <h3>Comparativo: Semana Atual vs Semana Anterior</h3>
+                        <p class="chart-subtitle">Acompanhe se você aumentou ou diminuiu seu rendimento em relação ao período passado.</p>
+                    </div>
+                </div>
+
+                <!-- INDICADORES VISUAIS DE CRESCIMENTO OU QUEDA -->
+                <div class="comparison-kpis-grid">
+                    <div class="comparison-kpi-card">
+                        <span class="comp-label">Horas Estudadas</span>
+                        <div class="comp-values">
+                            <strong id="comp-horas-atual">0h</strong>
+                            <small>vs <span id="comp-horas-anterior">0h</span></small>
+                        </div>
+                        <div class="comp-badge" id="badge-comp-horas">
+                            <span>0%</span>
+                        </div>
+                    </div>
+
+                    <div class="comparison-kpi-card">
+                        <span class="comp-label">Tarefas Concluídas</span>
+                        <div class="comp-values">
+                            <strong id="comp-tarefas-atual">0</strong>
+                            <small>vs <span id="comp-tarefas-anterior">0</span></small>
+                        </div>
+                        <div class="comp-badge" id="badge-comp-tarefas">
+                            <span>0%</span>
+                        </div>
+                    </div>
+
+                    <div class="comparison-kpi-card">
+                        <span class="comp-label">Aulas Concluídas</span>
+                        <div class="comp-values">
+                            <strong id="comp-aulas-atual">0</strong>
+                            <small>vs <span id="comp-aulas-anterior">0</span></small>
+                        </div>
+                        <div class="comp-badge" id="badge-comp-aulas">
+                            <span>0%</span>
+                        </div>
+                    </div>
+
+                    <div class="comparison-kpi-card">
+                        <span class="comp-label">Frequência de Estudos</span>
+                        <div class="comp-values">
+                            <strong id="comp-dias-atual">0 dias</strong>
+                            <small>vs <span id="comp-dias-anterior">0 dias</span></small>
+                        </div>
+                        <div class="comp-badge" id="badge-comp-dias">
+                            <span>0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chart-comparacao-semanal"></canvas>
+                </div>
+            </div>
+
+            <!-- HISTÓRICO GERAL E SESSÕES DE FOCO -->
+            <div class="performance-grid">
+                <div class="card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">MODO FOCO</span>
+                            <h3>Histórico das sessões de foco</h3>
+                        </div>
+                    </div>
+                    <div id="historico-sessoes-foco">
+                        <!-- JS -->
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">HISTÓRICO GERAL</span>
+                            <h3>Atividade recente</h3>
+                        </div>
+                    </div>
+                    <div id="atividade-recente">
+                        <!-- JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================
+             PÁGINA CONQUISTAS 🏆
+        ================================================== -->
+        <section id="page-conquistas" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">GAMIFICAÇÃO</span>
+                    <h2>Conquistas</h2>
+                    <p>Desafios para incentivar e recompensar sua constância, foco e evolução no StudyFlow.</p>
+                </div>
+            </div>
+
+            <!-- HEADER DO NÍVEL DO ESTUDANTE -->
+            <div class="card gamification-hero-card">
+                <div class="gamification-hero-left">
+                    <div class="trophy-avatar">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <span class="section-eyebrow">STATUS DO ESTUDANTE</span>
+                        <h3 id="gamification-nivel-titulo">Nível 1 — Aprendiz Focado</h3>
+                        <p id="gamification-progresso-resumo">0 de 15 conquistas desbloqueadas (0%)</p>
+                    </div>
+                </div>
+                <div class="gamification-hero-right">
+                    <div class="xp-badge">
+                        <i class="fa-solid fa-bolt"></i> <span id="gamification-total-xp">0 XP</span>
+                    </div>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar-fill" id="gamification-xp-bar" style="width: 0%"></div>
+                    </div>
+                    <small id="gamification-xp-next">Desbloqueie conquistas para ganhar XP e subir de nível!</small>
+                </div>
+            </div>
+
+            <!-- FILTRO DE CATEGORIAS DE CONQUISTAS -->
+            <div class="conquistas-filter-bar">
+                <div class="exercise-categories" id="conquistas-categorias">
+                    <button class="exercise-category active" data-cat="todas">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span>Todas</span>
+                    </button>
+                    <button class="exercise-category" data-cat="tarefas">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Tarefas</span>
+                    </button>
+                    <button class="exercise-category" data-cat="tempo">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>Tempo de Estudo</span>
+                    </button>
+                    <button class="exercise-category" data-cat="consistencia">
+                        <i class="fa-solid fa-fire"></i>
+                        <span>Consistência</span>
+                    </button>
+                    <button class="exercise-category" data-cat="aulas">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Videoaulas</span>
+                    </button>
+                    <button class="exercise-category" data-cat="metas">
+                        <i class="fa-solid fa-bullseye"></i>
+                        <span>Metas</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- GRID COM OS CARDS DE CONQUISTAS -->
+            <div id="conquistas-grid" class="conquistas-grid">
+                <!-- Gerado dinamicamente via JS -->
+            </div>
+        </section>
+        <!-- =================================================
+             PÁGINA MATÉRIAS
+        ================================================== -->
+        <section id="page-materias" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">
+                        ORGANIZAÇÃO
+                    </span>
+                    <h2>Minhas Matérias</h2>
+                    <p>
+                        Gerencie as matérias que fazem parte da sua rotina.
+                    </p>
+                </div>
+            </div>
+            <div class="card">
+                <form
+                    id="form-materia"
+                    class="materia-form professional"
+                >
+                    <div class="form-group">
+                        <label for="nova-materia">
+                            Nome da matéria
+                        </label>
+                        <input
+                            type="text"
+                            id="nova-materia"
+                            placeholder="Ex: Matemática"
+                            required
+                        >
+                    </div>
+                    <button
+                        type="submit"
+                        class="btn-primary"
+                    >
+                        <i class="fa-solid fa-plus"></i>
+                        Adicionar matéria
+                    </button>
+                </form>
+            </div>
+            <div
+                id="materias-grid"
+                class="subjects-grid"
+            >
+                <!-- JS -->
+            </div>
+        </section>
+        <!-- =================================================
+             PÁGINA METAS
+        ================================================== -->
+        <section id="page-metas" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">
+                        OBJETIVOS
+                    </span>
+                    <h2>Minhas Metas</h2>
+                    <p>
+                        Defina objetivos e acompanhe seu progresso.
+                    </p>
+                </div>
+            </div>
+            <div class="goals-grid">
+                <div class="card goal-main-card">
+                    <div class="goal-icon">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <span>Meta semanal</span>
+                    <h3>
+                        <span id="goal-current">
+                            0
+                        </span>
+                        /
+                        <span id="goal-target">
+                            5
+                        </span>
+                        tarefas
+                    </h3>
+                    <div class="progress-bar-bg">
+                        <div
+                            id="goal-progress"
+                            class="progress-bar-fill"
+                            style="width: 0%"
+                        ></div>
+                    </div>
+                    <p>
+                        Complete suas atividades para alcançar sua meta.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-eyebrow">
+                                PRÓXIMO OBJETIVO
+                            </span>
+                            <h3>Continue avançando</h3>
+                        </div>
+                    </div>
+                    <div class="goal-next">
+                        <i class="fa-solid fa-rocket"></i>
+                        <div>
+                            <strong>
+                                Mantenha sua sequência
+                            </strong>
+                            <p>
+                                Estude um pouco todos os dias.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- =================================================
+             PÁGINA CONFIGURAÇÕES
+        ================================================== -->
+        <section id="page-configuracoes" class="page">
+            <div class="page-intro">
+                <div>
+                    <span class="section-eyebrow">
+                        PERSONALIZAÇÃO
+                    </span>
+                    <h2>Configurações</h2>
+                    <p>
+                        Personalize sua experiência no StudyFlow.
+                    </p>
+                </div>
+            </div>
+            <div class="settings-list card">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-icon">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div>
+                            <strong>Perfil</strong>
+                            <span>Configure seu nome e objetivo.</span>
+                        </div>
+                    </div>
+                    <button class="btn-secondary">
+                        Editar
+                    </button>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-icon">
+                            <i class="fa-solid fa-trash"></i>
+                        </div>
+                        <div>
+                            <strong>Dados do StudyFlow</strong>
+                            <span>Apague os dados salvos neste dispositivo.</span>
+                        </div>
+                    </div>
+                    <button
+                        id="btn-limpar-dados"
+                        class="btn-danger"
+                    >
+                        Limpar dados
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+<!-- =====================================================
+     MODAL — NOVA / EDITAR TAREFA
+====================================================== -->
+<div
+    id="modal-tarefa"
+    class="modal-overlay"
+    aria-hidden="true"
+>
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <span class="section-eyebrow">
+                    ORGANIZAÇÃO
+                </span>
+                <h3 id="modal-tarefa-titulo">Adicionar nova tarefa</h3>
+            </div>
+            <button
+                class="modal-close"
+                data-close-modal="modal-tarefa"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <form id="form-tarefa">
+            <input type="hidden" id="tarefa-id">
+            <div class="form-group">
+                <label for="tarefa-titulo">
+                    Título da tarefa
+                </label>
+                <input
+                    type="text"
+                    id="tarefa-titulo"
+                    placeholder="Ex: Estudar funções trigonométricas"
+                    required
+                >
+            </div>
+            <div class="form-group">
+                <label for="tarefa-descricao">
+                    Descrição da atividade (opcional)
+                </label>
+                <textarea
+                    id="tarefa-descricao"
+                    rows="3"
+                    placeholder="Ex: Resolver lista de exercícios 4 e revisar conceitos do capítulo 2..."
+                ></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tarefa-materia">
+                        Matéria
+                    </label>
+                    <select
+                        id="tarefa-materia"
+                        required
+                    >
+                        <option value="" disabled selected>
+                            Selecione...
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-prioridade">
+                        Prioridade
+                    </label>
+                    <select
+                        id="tarefa-prioridade"
+                        required
+                    >
+                        <option value="baixa">
+                            Baixa
+                        </option>
+                        <option value="media" selected>
+                            Média
+                        </option>
+                        <option value="alta">
+                            Alta
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tarefa-data">
+                    Data de entrega
+                </label>
+                <input
+                    type="date"
+                    id="tarefa-data"
+                    required
+                >
+            </div>
+            <div class="form-actions">
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    data-close-modal="modal-tarefa"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btn-salvar-tarefa"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    <span>Criar tarefa</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- =====================================================
+     MODAL — NOVA / EDITAR AULA
+====================================================== -->
+<div
+    id="modal-aula"
+    class="modal-overlay"
+    aria-hidden="true"
+>
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <span class="section-eyebrow">
+                    BIBLIOTECA DE VIDEOAULAS
+                </span>
+                <h3 id="modal-aula-titulo">Adicionar nova videoaula</h3>
+            </div>
+            <button
+                class="modal-close"
+                data-close-modal="modal-aula"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <form id="form-aula">
+            <input type="hidden" id="aula-id">
+            <div class="form-group">
+                <label for="aula-titulo">
+                    Nome da aula
+                </label>
+                <input
+                    type="text"
+                    id="aula-titulo"
+                    placeholder="Ex: Introdução à Função do 2º Grau"
+                    required
+                >
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="aula-materia">
+                        Matéria
+                    </label>
+                    <select
+                        id="aula-materia"
+                        required
+                    >
+                        <option value="" disabled selected>
+                            Selecione...
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="aula-topico">
+                        Assunto ou Tópico
+                    </label>
+                    <input
+                        type="text"
+                        id="aula-topico"
+                        placeholder="Ex: Vértice da parábola"
+                        required
+                    >
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="aula-professor">
+                        Professor ou Canal (opcional)
+                    </label>
+                    <input
+                        type="text"
+                        id="aula-professor"
+                        placeholder="Ex: Prof. Ferretto"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="aula-duracao">
+                        Duração (minutos)
+                    </label>
+                    <input
+                        type="number"
+                        id="aula-duracao"
+                        placeholder="35"
+                        min="1"
+                    >
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="aula-link">
+                    Link da videoaula (YouTube ou externa)
+                </label>
+                <input
+                    type="url"
+                    id="aula-link"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    required
+                >
+                <small style="color: var(--text-muted); font-size: 10px; display: block; margin-top: 4px;">
+                    <i class="fa-brands fa-youtube" style="color: var(--danger);"></i> Suporta links do YouTube com reprodução integrada e miniatura automática.
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="aula-data">
+                    Data de cadastro
+                </label>
+                <input
+                    type="date"
+                    id="aula-data"
+                >
+            </div>
+            <div class="form-group">
+                <label for="aula-descricao">
+                    Descrição da aula
+                </label>
+                <textarea
+                    id="aula-descricao"
+                    placeholder="Descreva os tópicos principais abordados na aula..."
+                    rows="3"
+                ></textarea>
+            </div>
+            <div class="form-actions">
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    data-close-modal="modal-aula"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btn-salvar-aula"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Adicionar aula</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- =====================================================
+     MODAL — REPRODUÇÃO DE VIDEOAULA (YOUTUBE)
+====================================================== -->
+<div
+    id="modal-video"
+    class="modal-overlay"
+    aria-hidden="true"
+>
+    <div class="modal modal-video-dialog">
+        <div class="modal-header">
+            <div>
+                <span class="section-eyebrow" id="video-materia">VIDEOAULA</span>
+                <h3 id="video-titulo">Assistir Aula</h3>
+                <span id="video-topico" class="video-topico-badge"></span>
+            </div>
+            <button
+                class="modal-close"
+                data-close-modal="modal-video"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="video-embed-container">
+            <iframe
+                id="video-iframe"
+                src=""
+                title="Videoaula"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+            ></iframe>
+        </div>
+        <div class="video-info-footer">
+            <div class="video-meta-tags">
+                <span id="video-canal"><i class="fa-solid fa-chalkboard-user"></i> <span>Canal</span></span>
+                <span id="video-tempo"><i class="fa-regular fa-clock"></i> <span>0 min</span></span>
+            </div>
+            <div class="video-actions">
+                <a
+                    id="video-link-externo"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn-secondary"
+                >
+                    <i class="fa-brands fa-youtube" style="color: var(--danger);"></i>
+                    Abrir no YouTube
+                </a>
+            </div>
+        </div>
+        <div class="video-notice">
+            <i class="fa-solid fa-circle-info"></i>
+            <small>Caso o autor do vídeo tenha desativado a reprodução incorporada em outros sites, utilize o botão "Abrir no YouTube" para assistir diretamente na plataforma oficial.</small>
+        </div>
+    </div>
+</div>
+<!-- =====================================================
+     MODAL — CADASTRAR / EDITAR QUESTÃO PERSONALIZADA
+====================================================== -->
+<div
+    id="modal-questao"
+    class="modal-overlay"
+    aria-hidden="true"
+>
+    <div class="modal modal-lg">
+        <div class="modal-header">
+            <div>
+                <span class="section-eyebrow">
+                    BANCO DE QUESTÕES
+                </span>
+                <h3 id="modal-questao-titulo">Cadastrar Nova Questão</h3>
+            </div>
+            <button
+                class="modal-close"
+                data-close-modal="modal-questao"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <form id="form-questao">
+            <input type="hidden" id="questao-id">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="questao-materia">
+                        Matéria
+                    </label>
+                    <select
+                        id="questao-materia"
+                        required
+                    >
+                        <option value="" disabled selected>
+                            Selecione a matéria...
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="questao-materia-nova">
+                        Ou nova matéria personalizada
+                    </label>
+                    <input
+                        type="text"
+                        id="questao-materia-nova"
+                        placeholder="Ex: Programação, Banco de Dados, Inglês..."
+                    >
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="questao-topico">
+                    Assunto / Tópico
+                </label>
+                <input
+                    type="text"
+                    id="questao-topico"
+                    placeholder="Ex: SQL Joins, Funções Assíncronas, Cinemática..."
+                    required
+                >
+            </div>
+            <div class="form-group">
+                <label for="questao-pergunta">
+                    Enunciado da Questão
+                </label>
+                <textarea
+                    id="questao-pergunta"
+                    rows="3"
+                    placeholder="Digite o enunciado da questão..."
+                    required
+                ></textarea>
+            </div>
+            <div class="form-group">
+                <label>Alternativas de Resposta</label>
+                <div class="alternativas-inputs">
+                    <div class="alt-input-item">
+                        <span class="alt-letter">A</span>
+                        <input type="text" id="questao-alt-0" placeholder="Alternativa A" required>
+                    </div>
+                    <div class="alt-input-item">
+                        <span class="alt-letter">B</span>
+                        <input type="text" id="questao-alt-1" placeholder="Alternativa B" required>
+                    </div>
+                    <div class="alt-input-item">
+                        <span class="alt-letter">C</span>
+                        <input type="text" id="questao-alt-2" placeholder="Alternativa C" required>
+                    </div>
+                    <div class="alt-input-item">
+                        <span class="alt-letter">D</span>
+                        <input type="text" id="questao-alt-3" placeholder="Alternativa D" required>
+                    </div>
+                    <div class="alt-input-item">
+                        <span class="alt-letter">E</span>
+                        <input type="text" id="questao-alt-4" placeholder="Alternativa E (opcional)">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="questao-correta">
+                        Alternativa Correta (Gabarito)
+                    </label>
+                    <select id="questao-correta" required>
+                        <option value="0">Alternativa A</option>
+                        <option value="1">Alternativa B</option>
+                        <option value="2">Alternativa C</option>
+                        <option value="3">Alternativa D</option>
+                        <option value="4">Alternativa E</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="questao-explicacao">
+                    Explicação / Comentário da Resposta
+                </label>
+                <textarea
+                    id="questao-explicacao"
+                    rows="2"
+                    placeholder="Explique detalhadamente por que esta alternativa é a correta..."
+                ></textarea>
+            </div>
+            <div class="form-actions">
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    data-close-modal="modal-questao"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btn-salvar-questao"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    <span>Salvar questão</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- =====================================================
+     MODAL — CADASTRAR / EDITAR CONTEÚDO DE REVISÃO
+====================================================== -->
+<div
+    id="modal-revisao"
+    class="modal-overlay"
+    aria-hidden="true"
+>
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <span class="section-eyebrow">
+                    REPETIÇÃO ESPAÇADA
+                </span>
+                <h3 id="modal-revisao-titulo">Adicionar Conteúdo para Revisão</h3>
+            </div>
+            <button
+                class="modal-close"
+                data-close-modal="modal-revisao"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <form id="form-revisao">
+            <input type="hidden" id="revisao-id">
+            <div class="form-group">
+                <label for="revisao-nome">
+                    Nome do conteúdo
+                </label>
+                <input
+                    type="text"
+                    id="revisao-nome"
+                    placeholder="Ex: Teorema de Pitágoras e Relações Métricas"
+                    required
+                >
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="revisao-materia">
+                        Matéria
+                    </label>
+                    <select
+                        id="revisao-materia"
+                        required
+                    >
+                        <option value="" disabled selected>
+                            Selecione a matéria...
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="revisao-assunto">
+                        Assunto / Tópico
+                    </label>
+                    <input
+                        type="text"
+                        id="revisao-assunto"
+                        placeholder="Ex: Geometria Plana"
+                        required
+                    >
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="revisao-data-estudo">
+                        Data do primeiro estudo
+                    </label>
+                    <input
+                        type="date"
+                        id="revisao-data-estudo"
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="revisao-intervalo">
+                        Intervalo da 1ª revisão
+                    </label>
+                    <select
+                        id="revisao-intervalo"
+                        required
+                    >
+                        <option value="1">Revisar amanhã (+1 dia)</option>
+                        <option value="3" selected>Revisar daqui a 3 dias (+3 dias)</option>
+                        <option value="7">Revisar daqui a 7 dias (+7 dias)</option>
+                        <option value="15">Revisar daqui a 15 dias (+15 dias)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="revisao-descricao">
+                    Descrição do conteúdo (opcional)
+                </label>
+                <textarea
+                    id="revisao-descricao"
+                    rows="2"
+                    placeholder="Resuma o que foi estudado para orientar sua revisão..."
+                ></textarea>
+            </div>
+            <div class="form-group">
+                <label for="revisao-observacoes">
+                    Observações e pontos de atenção (opcional)
+                </label>
+                <textarea
+                    id="revisao-observacoes"
+                    rows="2"
+                    placeholder="Ex: Lembrar de decorar a fórmula da altura relativa e fazer os exercícios 5 e 8..."
+                ></textarea>
+            </div>
+            <div class="form-actions">
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    data-close-modal="modal-revisao"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btn-salvar-revisao"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    <span>Agendar revisão</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- =====================================================
+     MODAL — CONCLUIR REVISÃO COM FEEDBACK INTELIGENTE
+====================================================== -->
+<div
+    id="modal-concluir-revisao"
+    class="modal-overlay"
+    aria-hidden="true"
+>
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <span class="section-eyebrow">
+                    FEEDBACK DE APRENDIZADO
+                </span>
+                <h3 id="modal-concluir-titulo">Concluir Revisão</h3>
+                <p id="modal-concluir-subtitulo" style="font-size: 11px; color: var(--cyan); margin-top: 2px;"></p>
+            </div>
+            <button
+                class="modal-close"
+                data-close-modal="modal-concluir-revisao"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <form id="form-concluir-revisao">
+            <input type="hidden" id="concluir-revisao-id">
+            
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+                Como foi lembrar e responder aos conceitos deste conteúdo durante a revisão?
+            </p>
+
+            <div class="revisao-rating-group">
+                <button type="button" class="revisao-rating-btn rating-facil" data-rating="facil">
+                    <i class="fa-solid fa-face-smile"></i>
+                    <strong>Fácil</strong>
+                    <span>Lembrei com facilidade</span>
+                </button>
+                <button type="button" class="revisao-rating-btn rating-medio active" data-rating="medio">
+                    <i class="fa-solid fa-face-meh"></i>
+                    <strong>Médio</strong>
+                    <span>Lembrei a maior parte</span>
+                </button>
+                <button type="button" class="revisao-rating-btn rating-dificil" data-rating="dificil">
+                    <i class="fa-solid fa-face-frown"></i>
+                    <strong>Difícil</strong>
+                    <span>Tive dificuldades</span>
+                </button>
+            </div>
+
+            <!-- SUGESTÃO INTELIGENTE BASEADA NO FEEDBACK -->
+            <div id="box-sugestao-inteligente" class="smart-suggestion-card">
+                <div class="smart-suggestion-header">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <strong>Sugestão do Sistema Inteligente</strong>
+                </div>
+                <p id="texto-sugestao-inteligente">
+                    Conteúdo médio: sugerimos manter o intervalo previsto de 7 dias para consolidação da memória.
+                </p>
+            </div>
+
+            <div class="form-row" style="margin-top: 14px;">
+                <div class="form-group">
+                    <label for="concluir-proxima-data">
+                        Próxima revisão agendada
+                    </label>
+                    <input
+                        type="date"
+                        id="concluir-proxima-data"
+                        required
+                    >
+                </div>
+                <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                    <label class="checkbox-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 11px; margin-bottom: 8px;">
+                        <input type="checkbox" id="concluir-ciclo-dominado">
+                        <span>Conteúdo dominado (finalizar ciclo)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="concluir-notas">
+                    Notas da revisão (opcional)
+                </label>
+                <textarea
+                    id="concluir-notas"
+                    rows="2"
+                    placeholder="Como foi seu desempenho? O que precisa de mais atenção na próxima vez?"
+                ></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    data-close-modal="modal-concluir-revisao"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btn-confirmar-conclusao"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    <span>Registrar revisão</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- =====================================================
+     MODAL — HISTÓRICO DE REVISÕES DO CONTEÚDO
+====================================================== -->
+<div
+    id="modal-historico-revisao"
+    class="modal-overlay"
+    aria-hidden="true"
+>
+    <div class="modal modal-lg">
+        <div class="modal-header">
+            <div>
+                <span class="section-eyebrow">
+                    HISTÓRICO DE CICLOS
+                </span>
+                <h3 id="modal-historico-revisao-titulo">Histórico de Revisões</h3>
+                <span id="modal-historico-revisao-subtitulo" class="video-topico-badge"></span>
+            </div>
+            <button
+                class="modal-close"
+                data-close-modal="modal-historico-revisao"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="revisao-history-container">
+            <div id="revisao-history-meta" class="revisao-history-meta">
+                <!-- Injetado dinamicamente via JS -->
+            </div>
+            <h4 style="margin: 16px 0 10px 0; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+                <i class="fa-solid fa-timeline"></i> Linha do Tempo das Revisões
+            </h4>
+            <div id="revisao-history-timeline" class="revisao-history-timeline">
+                <!-- Ciclos de revisão via JS -->
+            </div>
+        </div>
+        <div class="form-actions" style="margin-top: 18px;">
+            <button
+                type="button"
+                class="btn-secondary"
+                data-close-modal="modal-historico-revisao"
+            >
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+<!-- =====================================================
+     NOTIFICAÇÕES
+====================================================== -->
+<div
+    id="notification-panel"
+    class="notification-panel"
+>
+    <div class="notification-header">
+        <div>
+            <strong>Notificações</strong>
+            <span>Suas atualizações</span>
+        </div>
+        <button id="close-notifications">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <div id="notification-list">
+        <div class="empty-state small">
+            <i class="fa-regular fa-bell"></i>
+            <p>
+                Nenhuma notificação no momento.
+            </p>
+        </div>
+    </div>
+</div>
+<!-- =====================================================
+     TOAST
+====================================================== -->
+<div
+    id="toast-container"
+    class="toast-container"
+    aria-live="polite"
+></div>
+<!-- JAVASCRIPT -->
+<script src="script.js"></script>
+</body>
+</html>

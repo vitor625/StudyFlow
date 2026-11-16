@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - StudyFlow</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <!-- LOGO -->
+        <div class="login-logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+
+            <h1>Study<span>Flow</span></h1>
+
+            <p>Organize seus estudos. Alcance seus objetivos.</p>
+        </div>
+
+
+        <!-- CARD -->
+        <div class="login-card">
+
+            <!-- LOGIN -->
+            <div id="login-form-container">
+
+                <div class="form-header">
+                    <h2>Bem-vindo de volta!</h2>
+                    <p>Entre na sua conta para continuar seus estudos.</p>
+                </div>
+
+                <form id="login-form">
+
+                    <div class="input-group">
+                        <label for="login-email">
+                            <i class="fas fa-envelope"></i>
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="login-email"
+                            placeholder="Digite seu e-mail"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="input-group">
+                        <label for="login-password">
+                            <i class="fas fa-lock"></i>
+                            Senha
+                        </label>
+
+                        <div class="password-input">
+                            <input
+                                type="password"
+                                id="login-password"
+                                placeholder="Digite sua senha"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="show-password"
+                                data-target="login-password"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="remember-me">
+                            <span>Lembrar de mim</span>
+                        </label>
+
+                        <a href="#" id="forgot-password">
+                            Esqueci minha senha
+                        </a>
+                    </div>
+
+
+                    <button type="submit" class="btn-login">
+                        <span>Entrar</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                </form>
+
+
+                <div class="divider">
+                    <span>ou</span>
+                </div>
+
+
+                <div class="register-link">
+                    <p>
+                        Ainda não possui uma conta?
+                        <a href="#" id="show-register">
+                            Criar conta
+                        </a>
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- CADASTRO -->
+            <div id="register-form-container" class="hidden">
+
+                <div class="form-header">
+                    <h2>Crie sua conta</h2>
+                    <p>Comece a organizar seus estudos com o StudyFlow.</p>
+                </div>
+
+
+                <form id="register-form">
+
+                    <div class="input-group">
+                        <label for="register-name">
+                            <i class="fas fa-user"></i>
+                            Nome
+                        </label>
+
+                        <input
+                            type="text"
+                            id="register-name"
+                            placeholder="Digite seu nome"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="input-group">
+                        <label for="register-email">
+                            <i class="fas fa-envelope"></i>
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="register-email"
+                            placeholder="Digite seu e-mail"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="input-group">
+                        <label for="register-password">
+                            <i class="fas fa-lock"></i>
+                            Senha
+                        </label>
+
+                        <div class="password-input">
+                            <input
+                                type="password"
+                                id="register-password"
+                                placeholder="Crie uma senha"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="show-password"
+                                data-target="register-password"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="input-group">
+                        <label for="register-confirm-password">
+                            <i class="fas fa-lock"></i>
+                            Confirmar senha
+                        </label>
+
+                        <div class="password-input">
+                            <input
+                                type="password"
+                                id="register-confirm-password"
+                                placeholder="Digite a senha novamente"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="show-password"
+                                data-target="register-confirm-password"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <button type="submit" class="btn-login">
+                        <span>Criar minha conta</span>
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+
+                </form>
+
+
+                <div class="register-link">
+                    <p>
+                        Já possui uma conta?
+                        <a href="#" id="show-login">
+                            Fazer login
+                        </a>
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RODAPÉ -->
+        <div class="login-footer">
+            <p>
+                © 2026 StudyFlow • Organize. Estude. Evolua.
+            </p>
+        </div>
+
+    </div>
+
+
+    <script src="login.js"></script>
+
+</body>
+</html>
